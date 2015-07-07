@@ -15,11 +15,11 @@ server {
   }
 
   location / {
-    try_files $uri @{{ server_name }};
+    try_files $uri @service;
   }
 
-  location @{{ server_name }} {
-    proxy_pass http://{{ ip }}:{{ port }};
+  location @service {
+    proxy_pass http://{{ proxy_addr }}:{{ port }};
     proxy_redirect off;
     proxy_buffering off;
 

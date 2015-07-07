@@ -1,15 +1,19 @@
 from flask import Flask, request, jsonify
+from flask_limiter import Limiter
 from jinja2 import Environment
-import sys
+from jinja2.loaders import FileSystemLoader
+import sys, os, psutil
 from subprocess import call
 from werkzeug.contrib.fixers import ProxyFix
 
 app = Flask(__name__)
+limiter = Limiter(app)
 
 env = Environment(loader=FileSystemLoader('templates'))
 template = env.get_template('nginx')
 
 @app.route('/api/<string:server>/<string:port>', methods=['POST'])
+@limiter.limit("1 per second")
 def create_nginx_config(server, port):
     temp = sys.stdout
     ip = request.remote_addr
@@ -20,8 +24,14 @@ def create_nginx_config(server, port):
     sys.stdout.close()
     sys.stdout = temp
     call(["/usr/sbin/service", "nginx", "restart"])
+    processes = [proc.name() for proc in psutil.process_iter()]
 
-    return jsonify(server_name=server, proxy_address=ip, port=port, status=200)
+    if 'nginx' in processes:
+       return jsonify(server_name=server, proxy_address=ip, port=port, status=200)
+    else:
+       os.remove(nginx_config)
+       call(["/usr/sbin/service", "nginx", "restart"])
+       return jsonify(message='configuration couldnt be generated', status=500)
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
