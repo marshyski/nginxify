@@ -8,7 +8,7 @@ Make a site-enable config for NGINX via an API
 What the heck is this thing?
 ----------------------------
 
-I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal if you have subdomains per customer, and you're deploying new web assets via Docker containers or with boring servers.
+I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal if you want a subdomain and docker container per customer instantly in-service.
 
 
 **Flow**
