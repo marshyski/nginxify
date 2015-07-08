@@ -16,6 +16,14 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
 ![Diagram](https://s3.amazonaws.com/timski-pictures/nginxify.jpg)
 
 
+**Gettings Started**
+
+    ## From host with app listening on 0.0.0.0:8080
+    curl -XPOST 'http://localhost/api/sub1.domain.com/8080'
+    
+    ## If basic auth is enabled on NGINX for API (recommended)
+    curl -u yourusername:yourpassword -XPOST 'http://localhost/api/sub1.domain.com/8080'
+
 **Default NGINX Template**
 
     server {
