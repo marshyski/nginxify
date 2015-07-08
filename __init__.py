@@ -31,7 +31,7 @@ def create_nginx_config(server, port):
     else:
        os.remove(nginx_config)
        call(["/usr/sbin/service", "nginx", "restart"])
-       return jsonify(message='configuration couldnt be generated', status=500)
+       return jsonify(message='configuration could not be generated', status=500)
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
