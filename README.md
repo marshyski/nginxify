@@ -24,6 +24,15 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
     ## If basic auth is enabled on NGINX for API (recommended)
     curl -u yourusername:yourpassword -XPOST 'http://nginxify/api/sub1.domain.com/8080'
 
+
+**Recommendations**
+
+ 1. Have the API not listen on port 80
+ 2. Create IPTables/FirewallD/Security Group rules to only allow inbound traffic from CIDR or IP Ranges of Docker hosts
+ 3. Use SSL and Basic Auth in NGINX for the API
+ 4. If you load balance NGINXify, containers will have to send a POST request to all NGINXify servers.
+
+
 **Default NGINX Template**
 
     server {
