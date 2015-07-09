@@ -1,6 +1,9 @@
 # NGINX's sites enabled directory
 nginx_sites_enabled: '/etc/nginx/sites-enabled'
 
+# NGINX jinja2 template name in templates directory
+nginx_template: 'nginx'
+
 # Limit the max number of NGINX sites enabled configurations
 config_limit:
 

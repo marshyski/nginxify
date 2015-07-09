@@ -13,6 +13,8 @@ config_yaml = yaml.load(file('config.yaml', 'r'))
 
 nginx_sites_enabled = config_yaml['nginx_sites_enabled']
 
+nginx_template = config_yaml['nginx_template']
+
 if config_yaml['config_limit']:
     config_limit = int(config_yaml['config_limit'])
 else:
@@ -27,7 +29,7 @@ app = Flask(__name__)
 limiter = Limiter(app)
 
 env = Environment(loader=FileSystemLoader('templates'))
-template = env.get_template('nginx')
+template = env.get_template(nginx_template)
 
 def config_count():
     return int(len([name for name in os.listdir(nginx_sites_enabled) if os.path.isfile(os.path.join(nginx_sites_enabled, name))]))
