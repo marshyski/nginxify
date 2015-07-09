@@ -14,7 +14,7 @@ config_yaml = yaml.load(file('config.yaml', 'r'))
 nginx_sites_enabled = config_yaml['nginx_sites_enabled']
 
 if config_yaml['config_limit']:
-    config_limit = config_yaml['config_limit']
+    config_limit = int(config_yaml['config_limit'])
 else:
     config_limit = 'None'
 
@@ -30,13 +30,14 @@ env = Environment(loader=FileSystemLoader('templates'))
 template = env.get_template('nginx')
 
 def config_count():
-    print len([name for name in os.listdir(nginx_enabled) if os.path.isfile(os.path.join(nginx_enabled, name))])
+    return int(len([name for name in os.listdir(nginx_sites_enabled) if os.path.isfile(os.path.join(nginx_sites_enabled, name))]))
 
 @app.route('/api/<string:server>/<string:port>', methods=['POST'])
 @limiter.limit(request_limit)
 def create_nginx_config(server, port):
     """Create NGINX config in sites-enabled directory"""
-    if config_limit == config_count():
+
+    if config_count() >= config_limit:
        return jsonify(message='reached max configuration limit', config_limit=config_limit, config_count=config_count(), status=400)
 
     ip = request.remote_addr
