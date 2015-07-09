@@ -15,7 +15,11 @@ start_time = time.time()
 
 hostname = os.uname()[1]
 
-config_yaml = yaml.load(file('config.yaml', 'r'))
+template_dir = os.getcwd() + '/nginxify/templates'
+
+config_file = os.getcwd() + '/nginxify/config.yaml'
+
+config_yaml = yaml.load(file(config_file, 'r'))
 
 nginx_sites_enabled = config_yaml['nginx_sites_enabled']
 
@@ -34,7 +38,7 @@ else:
 app = Flask(__name__)
 limiter = Limiter(app)
 
-env = Environment(loader=FileSystemLoader('templates'))
+env = Environment(loader=FileSystemLoader(template_dir))
 template = env.get_template(nginx_template)
 
 def config_count():
