@@ -2,9 +2,11 @@ from flask import Flask, request, jsonify
 from flask_limiter import Limiter
 from jinja2 import Environment
 from jinja2.loaders import FileSystemLoader
-import sys, os, psutil
-from subprocess import call
 from werkzeug.contrib.fixers import ProxyFix
+from subprocess import call
+import sys
+import os
+import psutil
 
 app = Flask(__name__)
 limiter = Limiter(app)
