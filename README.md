@@ -25,6 +25,24 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
     curl -u yourusername:yourpassword -XPOST 'http://nginxify/api/sub1.domain.com/8080'
 
 
+**Configurations**
+
+*config.yaml*
+
+    # NGINX's sites enabled directory
+    nginx_sites_enabled: '/etc/nginx/sites-enabled'
+    
+    # NGINX jinja2 template name in templates directory
+    nginx_template: 'nginx'
+    
+    # Limit the max number of NGINX sites enabled configurations
+    config_limit:
+    
+    # API request rate limit
+    # http://flask-limiter.readthedocs.org/en/stable/
+    request_limit: '1 per second'
+
+
 **Recommendations**
 
  1. Have the API not listen on port 80
