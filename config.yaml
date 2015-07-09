@@ -1,9 +1,9 @@
 # NGINX's sites enabled directory
-nginx_sites_enabled = '/etc/nginx/sites-enabled'
+nginx_sites_enabled: '/etc/nginx/sites-enabled'
 
 # Limit the max number of NGINX sites enabled configurations
-config_limit = ''
+config_limit:
 
 # API request rate limit
 # http://flask-limiter.readthedocs.org/en/stable/
-request_limit = '1 per second'
+request_limit: '1 per second'
