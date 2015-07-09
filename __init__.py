@@ -32,6 +32,7 @@ env = Environment(loader=FileSystemLoader('templates'))
 template = env.get_template(nginx_template)
 
 def config_count():
+    """Return count of files in NGINX sites-enabled directory"""
     return int(len([name for name in os.listdir(nginx_sites_enabled) if os.path.isfile(os.path.join(nginx_sites_enabled, name))]))
 
 @app.route('/api/<string:server>/<string:port>', methods=['POST'])
