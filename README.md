@@ -20,9 +20,32 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
 
     ## From host with app listening on 0.0.0.0:8080
     curl -XPOST 'http://nginxify/api/sub1.domain.com/8080'
+    {
+      "config_count": 3,
+      "port": "8080",
+      "proxy_address": "10.177.0.55",
+      "server_name": "sub1.domain.com",
+      "status": 200
+    }
     
     ## If basic auth is enabled on NGINX for API (recommended)
     curl -u yourusername:yourpassword -XPOST 'http://nginxify/api/sub1.domain.com/8080'
+    
+    ## Get count of files in NGINX sites-enabled directory
+    curl -XGET http://nginxify/api/count
+    {
+      "config_count": 3,
+      "config_limit": "None",
+      "status": 200
+    }
+    
+    # Health check endpoint
+    curl -XGET http://nginxify/api/health
+    {
+      "hostname": "nginxify01",
+      "status": 200,
+      "uptime": "1D:2H:3M:55S"
+    }
 
 
 **Configurations**
