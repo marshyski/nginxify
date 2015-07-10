@@ -18,7 +18,7 @@ Getting Started
 ---------------
 
 **From host with app listening on 0.0.0.0:8080**
-    
+
     curl -XPOST 'http://nginxify/api/sub1.domain.com/8080'
     {
       "config_count": 3,
@@ -27,27 +27,28 @@ Getting Started
       "server_name": "sub1.domain.com",
       "status": 200
     }
-    
+
 **If basic auth is enabled on NGINX for API (recommended)**
-    
+
     curl -u yourusername:yourpassword -XPOST 'http://nginxify/api/sub1.domain.com/8080'
-    
+
 **Get count of files in NGINX sites-enabled directory**
-    
+
     curl -XGET http://nginxify/api/count
     {
       "config_count": 3,
       "config_limit": "None",
       "status": 200
     }
-    
+
 **Health check endpoint**
-    
+
     curl -XGET http://nginxify/api/health
     {
+      "cpu_percent": 12,
       "hostname": "nginxify01",
       "status": 200,
-      "uptime": "1D:2H:3M:55S"
+      "uptime": "2D:5H:3M:55S"
     }
 
 
@@ -58,13 +59,13 @@ Configurations
 
     # NGINX's sites enabled directory
     nginx_sites_enabled: '/etc/nginx/sites-enabled'
-    
+
     # NGINX jinja2 template name in templates directory
     nginx_template: 'nginx'
-    
+
     # Limit the max number of NGINX sites enabled configurations
     config_limit:
-    
+
     # API request rate limit
     # http://flask-limiter.readthedocs.org/en/stable/
     request_limit: '1 per second'
@@ -85,32 +86,32 @@ Default NGINX Template
     server {
       listen       80;
       server_name  {{ server_name }};
-    
+
       location ~ /(.git|.svn|README.md) {
         deny all;
         log_not_found off;
         access_log off;
         return 404;
       }
-    
+
       location = /favicon.ico {
         log_not_found off;
         access_log off;
       }
-    
+
       location / {
         try_files $uri @service;
       }
-    
+
       location @service {
         proxy_pass http://{{ proxy_addr }}:{{ port }};
         proxy_redirect off;
         proxy_buffering off;
-    
+
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
 	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    
+
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
@@ -120,5 +121,5 @@ Default NGINX Template
 To Do's
 -------
 
- 
+
   - Delete configurations
