@@ -5,9 +5,9 @@ from jinja2.loaders import FileSystemLoader
 from werkzeug.contrib.fixers import ProxyFix
 from subprocess import call
 from datetime import datetime, timedelta
+from psutil import cpu_percent, process_iter
 import sys
 import os
-import psutil
 import yaml
 import time
 
@@ -69,7 +69,7 @@ def create_nginx_config(server, port):
 
     call(["/usr/sbin/service", "nginx", "restart"])
 
-    processes = [proc.name() for proc in psutil.process_iter()]
+    processes = [proc.name() for proc in process_iter()]
 
     if 'nginx' in processes:
        return jsonify(server_name=server, proxy_address=ip, port=port, config_count=config_count(), status=200)
@@ -87,7 +87,7 @@ def get_config_count():
 @app.route('/api/health')
 def health():
     """Get NGINXify health check"""
-    return jsonify(hostname=hostname, uptime=uptime(), status=200)
+    return jsonify(hostname=hostname, uptime=uptime(), cpu_percent=int(cpu_percent(interval=None, percpu=False)), status=200)
 
 @app.errorhandler(400)
 def bad_request(error):
