@@ -2,8 +2,6 @@
 
 Make a site-enable config for NGINX via an API
 
-----------
-
 
 What the heck is this thing?
 ----------------------------
@@ -16,9 +14,11 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
 ![Diagram](https://s3.amazonaws.com/timski-pictures/nginxify.jpg)
 
 
-**Getting Started**
+Getting Started
+---------------
 
-    ## From host with app listening on 0.0.0.0:8080
+**From host with app listening on 0.0.0.0:8080**
+    
     curl -XPOST 'http://nginxify/api/sub1.domain.com/8080'
     {
       "config_count": 3,
@@ -28,10 +28,12 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
       "status": 200
     }
     
-    ## If basic auth is enabled on NGINX for API (recommended)
+**If basic auth is enabled on NGINX for API (recommended)**
+    
     curl -u yourusername:yourpassword -XPOST 'http://nginxify/api/sub1.domain.com/8080'
     
-    ## Get count of files in NGINX sites-enabled directory
+**Get count of files in NGINX sites-enabled directory**
+    
     curl -XGET http://nginxify/api/count
     {
       "config_count": 3,
@@ -39,7 +41,8 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
       "status": 200
     }
     
-    # Health check endpoint
+**Health check endpoint**
+    
     curl -XGET http://nginxify/api/health
     {
       "hostname": "nginxify01",
@@ -48,9 +51,10 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
     }
 
 
-**Configurations**
+Configurations
+--------------
 
-*config.yaml*
+**config.yaml**
 
     # NGINX's sites enabled directory
     nginx_sites_enabled: '/etc/nginx/sites-enabled'
@@ -66,7 +70,8 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
     request_limit: '1 per second'
 
 
-**Recommendations**
+Recommendations
+---------------
 
  1. Have the API not listen on port 80
  2. Create IPTables/FirewallD/Security Group rules to only allow inbound traffic from CIDR or IP Ranges of Docker hosts
@@ -74,7 +79,8 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
  4. If you load balance NGINXify, containers will have to send a POST request to all NGINXify servers.
 
 
-**Default NGINX Template**
+Default NGINX Template
+----------------------
 
     server {
       listen       80;
@@ -111,7 +117,8 @@ I wanted to be able to automatically add a reverse proxy entry to NGINX.  Ideal 
       }
     }
 
-**To Do's**
+To Do's
+-------
+
  
   - Delete configurations
-  - Hard limit new configurations added (round robin like feature)
