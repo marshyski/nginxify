@@ -32,6 +32,15 @@ Getting Started
 
     curl -u yourusername:yourpassword -XPOST 'http://nginxify/api/sub1.domain.com/8080'
 
+**Delete site-enabled configuration**
+
+    curl -XDELETE 'http://nginxify/api/sub1.domain.com'
+    {
+      "config_count": 3,
+      "message": "site deleted",
+      "status": 200
+    }
+
 **Get count of files in NGINX sites-enabled directory**
 
     curl -XGET http://nginxify/api/count
@@ -117,9 +126,3 @@ Default NGINX Template
         proxy_set_header Connection "Upgrade";
       }
     }
-
-To Do's
--------
-
-
-  - Delete configurations
