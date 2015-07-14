@@ -78,6 +78,15 @@ def create_nginx_config(server, port):
        call(["/usr/sbin/service", "nginx", "restart"])
        abort(500)
 
+@app.route('/api/<string:config>', methods=['DELETE'])
+@limiter.limit(request_limit)
+def delete_nginx_config(config):
+    """Delete NGINX config in sites-enabled directory"""
+    nginx_config = nginx_sites_enabled + '/' + config
+    os.remove(nginx_config)
+    call(["/usr/sbin/service", "nginx", "restart"])
+    return jsonify(message="site deleted", config_count=config_count(), status=200)
+
 @app.route('/api/count')
 @limiter.limit(request_limit)
 def get_config_count():
