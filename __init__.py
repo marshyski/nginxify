@@ -83,9 +83,13 @@ def create_nginx_config(server, port):
 def delete_nginx_config(config):
     """Delete NGINX config in sites-enabled directory"""
     nginx_config = nginx_sites_enabled + '/' + config
-    os.remove(nginx_config)
-    call(["/usr/sbin/service", "nginx", "restart"])
-    return jsonify(message="site deleted", config_count=config_count(), status=200)
+    if os.path.isfile(nginx_config):
+       os.remove(nginx_config)
+       call(["/usr/sbin/service", "nginx", "restart"])
+       message = "%s site deleted" % config
+       return jsonify(message=message, config_count=config_count(), status=200)
+    else:
+       abort(404)
 
 @app.route('/api/count')
 @limiter.limit(request_limit)
@@ -102,6 +106,11 @@ def health():
 def bad_request(error):
     """400 BAD REQUEST"""
     return make_response(jsonify({"error": "reached max configuration limit", "config_limit": config_limit, "config_count": config_count()}), 400)
+
+@app.errorhandler(404)
+def not_found(error):
+    """404 NOT FOUND"""
+    return make_response(jsonify({"error": "configuration or URI not found"}), 404)
 
 @app.errorhandler(500)
 def internal_error(error):
