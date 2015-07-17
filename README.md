@@ -37,7 +37,7 @@ Getting Started
     curl -XDELETE 'http://nginxify/api/sub1.domain.com'
     {
       "config_count": 3,
-      "message": "site deleted",
+      "message": "sub1.domain.com site deleted",
       "status": 200
     }
 
