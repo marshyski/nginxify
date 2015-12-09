@@ -1,5 +1,5 @@
 Flask==0.10.1
-Flask-Limiter==0.7.9
-gunicorn==19.3.0
-psutil==3.0.1
+Flask-Limiter==0.9.1
+gunicorn==19.4.1
+psutil==3.3.0
 PyYAML==3.11

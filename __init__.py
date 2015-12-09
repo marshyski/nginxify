@@ -1,4 +1,7 @@
-from flask import Flask, request, jsonify, make_response, abort
+"""
+NGINXify
+"""
+from flask import Flask, request, jsonify, abort
 from flask_limiter import Limiter
 from jinja2 import Environment
 from jinja2.loaders import FileSystemLoader
@@ -43,12 +46,13 @@ template = env.get_template(nginx_template)
 
 def config_count():
     """Return count of files in NGINX sites-enabled directory"""
-    return int(len([name for name in os.listdir(nginx_sites_enabled) if os.path.isfile(os.path.join(nginx_sites_enabled, name))]))
+    return int(len([name for name in os.listdir(nginx_sites_enabled) \
+    if os.path.isfile(os.path.join(nginx_sites_enabled, name))]))
 
 def uptime():
     """Return uptime about nginxify for health check"""
     seconds = timedelta(seconds=int(time.time() - start_time))
-    d = datetime(1,1,1) + seconds
+    d = datetime(1, 1, 1) + seconds
     return("%dD:%dH:%dM:%dS" % (d.day-1, d.hour, d.minute, d.second))
 
 @app.route('/api/<string:server>/<string:port>', methods=['POST'])
@@ -57,7 +61,7 @@ def create_nginx_config(server, port):
     """Create NGINX config in sites-enabled directory"""
 
     if config_count() >= config_limit:
-       abort(400)
+        abort(400)
 
     ip = request.remote_addr
     nginx_config = nginx_sites_enabled + '/' + server
@@ -72,11 +76,12 @@ def create_nginx_config(server, port):
     processes = [proc.name() for proc in process_iter()]
 
     if 'nginx' in processes:
-       return jsonify(server_name=server, proxy_address=ip, port=port, config_count=config_count(), status=200)
+        return jsonify(server_name=server, proxy_address=ip, port=port, \
+        config_count=config_count(), status=200)
     else:
-       os.remove(nginx_config)
-       call(["/usr/sbin/service", "nginx", "restart"])
-       abort(500)
+        os.remove(nginx_config)
+        call(["/usr/sbin/service", "nginx", "restart"])
+        abort(500)
 
 @app.route('/api/<string:config>', methods=['DELETE'])
 @limiter.limit(request_limit)
@@ -84,38 +89,40 @@ def delete_nginx_config(config):
     """Delete NGINX config in sites-enabled directory"""
     nginx_config = nginx_sites_enabled + '/' + config
     if os.path.isfile(nginx_config):
-       os.remove(nginx_config)
-       call(["/usr/sbin/service", "nginx", "restart"])
-       message = "%s site deleted" % config
-       return jsonify(message=message, config_count=config_count(), status=200)
+        os.remove(nginx_config)
+        call(["/usr/sbin/service", "nginx", "restart"])
+        message = "%s site deleted" % config
+        return jsonify(message=message, config_count=config_count())
     else:
-       abort(404)
+        abort(404)
 
 @app.route('/api/count')
 @limiter.limit(request_limit)
 def get_config_count():
     """Get NGINX sites-enabled configs count"""
-    return jsonify(config_count=config_count(), config_limit=config_limit, status=200)
+    return jsonify(config_count=config_count(), config_limit=config_limit)
 
 @app.route('/api/health')
 def health():
     """Get NGINXify health check"""
-    return jsonify(hostname=hostname, uptime=uptime(), cpu_percent=int(cpu_percent(interval=None, percpu=False)), status=200)
+    return jsonify(hostname=hostname, uptime=uptime(), \
+    cpu_percent=int(cpu_percent(interval=None, percpu=False)))
 
 @app.errorhandler(400)
-def bad_request(error):
+def bad_request():
     """400 BAD REQUEST"""
-    return make_response(jsonify({"error": "reached max configuration limit", "config_limit": config_limit, "config_count": config_count()}), 400)
+    return jsonify(error='reached max configuration limit', \
+    config_limit=config_limit, config_count=config_count())
 
 @app.errorhandler(404)
-def not_found(error):
+def not_found():
     """404 NOT FOUND"""
-    return make_response(jsonify({"error": "configuration or URI not found"}), 404)
+    return jsonify(error='configuration or URI not found')
 
 @app.errorhandler(500)
-def internal_error(error):
+def internal_error():
     """500 INTERNAL SERVER ERROR"""
-    return make_response(jsonify({"error": "configuration could not be generated"}), 500)
+    return jsonify(error='configuration could not be generated')
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 
