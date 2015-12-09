@@ -109,18 +109,18 @@ def health():
     cpu_percent=int(cpu_percent(interval=None, percpu=False)))
 
 @app.errorhandler(400)
-def bad_request():
+def bad_request(error):
     """400 BAD REQUEST"""
     return jsonify(error='reached max configuration limit', \
     config_limit=config_limit, config_count=config_count())
 
 @app.errorhandler(404)
-def not_found():
+def not_found(error):
     """404 NOT FOUND"""
     return jsonify(error='configuration or URI not found')
 
 @app.errorhandler(500)
-def internal_error():
+def internal_error(error):
     """500 INTERNAL SERVER ERROR"""
     return jsonify(error='configuration could not be generated')
 
